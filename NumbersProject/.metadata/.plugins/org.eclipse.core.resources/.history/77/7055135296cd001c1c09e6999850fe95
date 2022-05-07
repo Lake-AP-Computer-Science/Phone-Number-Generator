@@ -1,0 +1,139 @@
+package p;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+public class NumbersConverter {
+	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+	
+	private HashMap<String, String> LetterToNumberMap = new HashMap<String, String>();
+	private HashMap<String, ArrayList<String>> NumberToLetterMap = new HashMap<String, ArrayList<String>>();
+	
+	private ArrayList<String> AllWords;
+	
+	public NumbersConverter()
+	{
+		for (int i = 0; i < 26; ++i)
+		{
+			if (i < 15 || i >= 19 && i < 22)
+				this.LetterToNumberMap.put(String.valueOf(ALPHABET.charAt(i)), String.valueOf(i < 19 ? (i / 3 + 2): 8));
+			else
+				this.LetterToNumberMap.put(String.valueOf(ALPHABET.charAt(i)), String.valueOf(i >= 15 && i < 19 ? 7 : 9));
+		}
+		
+		int index = 0;
+		
+		for (String Key : LetterToNumberMap.values())
+		{
+			ArrayList<String> NewVal = new ArrayList<String>();
+			
+			if (NumberToLetterMap.containsKey(Key))
+			{
+				NewVal = NumberToLetterMap.get(Key);//.add();
+			}
+			
+			NewVal.add(String.valueOf(ALPHABET.charAt(index++)));
+			
+			NumberToLetterMap.put(Key, NewVal);
+		}
+		
+		System.out.println(this.LetterToNumberMap);
+		System.out.println(this.NumberToLetterMap);
+		
+		try {
+			AllWords = ReadFile.getList();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("Homemade API Down");
+		}
+	}
+	
+	public String formatNumber(String PhoneNumber)
+	{
+		return "+" + PhoneNumber.charAt(0) + " (" + PhoneNumber.substring(1, 4) + ") " + PhoneNumber.substring(4, 7) + "-" + PhoneNumber.substring(7);
+	}
+
+	public String getPhoneNumber(String PhoneNumber)
+	{
+		String Prefix = PhoneNumber.toLowerCase().substring(0, 4);
+		PhoneNumber = PhoneNumber.toLowerCase().substring(4);
+		
+		String Return = "";
+		
+		for (char c : PhoneNumber.toCharArray())
+		{
+			Return += this.LetterToNumberMap.get(String.valueOf(c));
+		}
+		
+		return formatNumber(Prefix + Return);
+	}
+	
+	private String RecursiveFind(String PhoneNumber, int Index, String BuiltWord)
+	{	
+		if(PhoneNumber.length() == Index)
+		{
+			//System.out.println(BuiltWord);
+			return BuiltWord + " ";
+		}
+		
+		String Find = "";
+		
+		for (String s : this.NumberToLetterMap.get(String.valueOf(PhoneNumber.charAt(Index)))) 
+		{
+			Find += RecursiveFind(PhoneNumber, Index + 1, BuiltWord + s) + " ";
+		}
+		
+		return Find;
+	}
+	
+	public ArrayList<String> getAllPossible(String PhoneNumber)
+	{
+		String Prefix = PhoneNumber.toLowerCase().substring(0, 4);
+		PhoneNumber = PhoneNumber.toLowerCase().substring(4);
+		
+		System.out.println(PhoneNumber);
+		
+		ArrayList<String> All = new ArrayList<String>();
+		
+		for (String s : RecursiveFind(PhoneNumber, 0, "").split(" "))
+		{
+			All.add(s);
+		}
+		
+		All.add(Prefix);
+		
+		System.out.println(RecursiveFind(PhoneNumber, 0, ""));
+		
+		return All;
+	}
+	
+	public HashSet<String> getAllFiltered(String PhoneNumber)
+	{
+		ArrayList<String> Unfiltered = getAllPossible(PhoneNumber);
+		String Prefix = Unfiltered.remove(Unfiltered.size() - 1);
+		HashSet<String> Return = new HashSet<String>();
+		
+		for (String s : Unfiltered)
+		{
+			if (s.strip() == "")
+				continue;
+			
+			for (String s1 : AllWords)
+			{
+				if (s1.contains(s))
+					Return.add(formatNumber(Prefix + s));
+			}
+		}
+		
+		return Return;
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		NumbersConverter C = new NumbersConverter();
+		System.out.println(C.getPhoneNumber("1800THRIFTY"));
+		System.out.println(C.getAllFiltered("18008474389"));
+	}
+}
