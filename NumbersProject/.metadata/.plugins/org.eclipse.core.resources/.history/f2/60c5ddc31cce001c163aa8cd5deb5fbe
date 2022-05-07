@@ -44,6 +44,9 @@ public class NumbersConverter {
 		NumberToLetterMap.put("1", A);
 		NumberToLetterMap.put("0", A);
 		
+//		System.out.println(this.LetterToNumberMap);
+//		System.out.println(this.NumberToLetterMap);
+		
 		try {
 			AllWords = ReadFile.getList();
 		} catch (Exception e) {
@@ -148,6 +151,7 @@ public class NumbersConverter {
 	}
 	
 	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 		NumbersConverter C = new NumbersConverter();
 		System.out.println(C.getPhoneNumber("1800COMPUTE"));
 		System.out.println(C.getAllFiltered("18003569377"));
