@@ -972,6 +972,7 @@ anarchy
 anathema
 anatomic
 anatomy
+anay
 ancestor
 ancestry
 anchor
@@ -21409,6 +21410,7 @@ pontoon
 pontoons
 pony
 ponytail
+poo
 pooch
 pooches
 poodle

@@ -1,9 +1,9 @@
 package p;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class NumbersConverter {
 	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -39,8 +39,10 @@ public class NumbersConverter {
 			NumberToLetterMap.put(Key, NewVal);
 		}
 		
-		System.out.println(this.LetterToNumberMap);
-		System.out.println(this.NumberToLetterMap);
+		ArrayList<String> A = new ArrayList<String>();
+		A.add("/");
+		NumberToLetterMap.put("1", A);
+		NumberToLetterMap.put("0", A);
 		
 		try {
 			AllWords = ReadFile.getList();
@@ -71,9 +73,12 @@ public class NumbersConverter {
 	}
 	
 	private String RecursiveFind(String PhoneNumber, int Index, String BuiltWord)
-	{
-		if(PhoneNumber.length() - 1 == Index)
-			return BuiltWord;
+	{	
+		if(PhoneNumber.length() == Index)
+		{
+			//System.out.println(BuiltWord);
+			return BuiltWord + " ";
+		}
 		
 		String Find = "";
 		
@@ -97,12 +102,35 @@ public class NumbersConverter {
 			All.add(s);
 		}
 		
+		All.add(Prefix);
+		
 		return All;
+	}
+	
+	private int recursiveDepletion(String Long)
+	{
+		if (Long.length() == 0)
+			return 0;
+		
+		ArrayList<Integer> Compare = new ArrayList<Integer>();
+		
+		for (String word : AllWords)
+		{
+			if (Long.indexOf(word) == 0)
+			{
+				Compare.add(recursiveDepletion(Long.replace(word, "")));
+			}
+		}
+		
+		Collections.sort(Compare);
+		
+		return (int) (Compare.isEmpty() ? 100 : Compare.get(0));
 	}
 	
 	public HashSet<String> getAllFiltered(String PhoneNumber)
 	{
 		ArrayList<String> Unfiltered = getAllPossible(PhoneNumber);
+		String Prefix = Unfiltered.remove(Unfiltered.size() - 1);
 		HashSet<String> Return = new HashSet<String>();
 		
 		for (String s : Unfiltered)
@@ -110,10 +138,9 @@ public class NumbersConverter {
 			if (s.strip() == "")
 				continue;
 			
-			for (String s1 : AllWords)
+			if (recursiveDepletion(s) == 0)
 			{
-				if (s1.contains(s))
-					Return.add(s);
+				Return.add(formatNumber(Prefix + s));
 			}
 		}
 		
@@ -121,9 +148,8 @@ public class NumbersConverter {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		NumbersConverter C = new NumbersConverter();
-		System.out.println(C.getPhoneNumber("1800flowers"));
-		System.out.println(C.getAllFiltered("18003569377"));
+		System.out.println(C.getPhoneNumber("1800URMOMS"));
+		System.out.println(C.getAllFiltered("18009346377"));
 	}
 }
