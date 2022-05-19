@@ -148,6 +148,16 @@ public class NumbersConverter {
 	
 	public static void main(String[] args) {
 		NumbersConverter C = new NumbersConverter();
-		System.out.println(C.getAllFiltered(""));
+		System.out.println(C.getPhoneNumber("1800GOTJUNK"));
+		System.out.println(C.getPhoneNumber("1800FLOWERS"));
+		System.out.println(C.getPhoneNumber("1800CONTACT"));
+		System.out.println(C.getPhoneNumber("1800JETBLUE"));
+		System.out.println(C.getPhoneNumber("1800BESTBUY"));
+		System.out.println(C.getPhoneNumber("1800CARCASH"));
+		System.out.println(C.getPhoneNumber("1800WALMART"));
+		System.out.println(C.getPhoneNumber("1800HOMEDEPOT"));
+		
+		System.out.println(C.getAllFiltered("18007225728"));
+		System.out.println(C.getAllFiltered("18003643663"));
 	}
 }
